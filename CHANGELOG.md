@@ -1,10 +1,12 @@
 # Changelog
 
-## 1.0.0 — pre-release
+## 1.0.0
 
-Core, the wardrobe and the Armory are built, tested and confirmed in game, and
-the FOMOD installer is built and validated. The manual archive and a release
-pass over the Nexus copy remain.
+First release. Core, the wardrobe and the Armory are built, tested and confirmed
+in game; both archives — the FOMOD installer and the manual layout — are built
+and validated.
+
+Published at [Nexus mod 133](https://www.nexusmods.com/games/starwarszerocompany/mods/133).
 
 Entries are grouped by feature rather than by date. Where a conclusion was
 reached and later overturned, both are kept — the correction is usually the more
@@ -535,6 +537,17 @@ holding `CPD_WeaponSpec_Blaster_Pistol_Rex` and `CPD_GK_Pistol_DC-17`, and not
 `CPD_GK_Pistol_DC-17_Rex`. Reading the save for equipped state, rather than
 inferring it from what was offered, is the reusable part. The requirement hook
 now also emits `pick_asked part= slot= answer=` when a row's answer changes.
+
+**The label was necessary and not sufficient**, which play found and the log
+could not. Equipping `CPD_WeaponSpec_Blaster_Pistol_Rex` still leaves the stock
+single-pistol kit on, because the class's `DefaultPart` is authored to it — so
+picking "Blaster (Rex)" is one step and choosing "DC-17 (Rex)" under Customize
+Weapon is a separate second one, and an operator who stops after the first
+carries one pistol. Recorded as a known issue rather than fixed: the shape of a
+fix is a one-property container override retargeting that `DefaultPart` at
+`CPD_GK_Pistol_DC-17_Rex`, which writes no identity and sits inside the pipeline
+already built, weighed against shipping a container for a single weapon. The
+label stays either way; it is what makes the second pick findable.
 
 **The DC-17M works.** Trick's clone-commando rifle — three fire modes, its own
 abilities, attributes, animations and icon — offered to an ordinary operator
@@ -1233,3 +1246,72 @@ keys on `Info.Name`, and none keys on anything worn.
 **An outfit can grant something, and what it grants is posture.** The three
 Mandalorian legs parts contribute `Part.Character.Stance.Wide`. No outfit part in
 the game grants an identity.
+
+---
+
+### Not from Open Kit: Final Shot draws two blank ability rows
+
+Reported as a mod bug against a Jae screenshot — two empty entries under
+SPECIALIZATION ABILITIES, one with a magenta square where the icon belongs, one
+with a grey one. It is stock game data, and the measurement is short enough to
+keep so the next report can be closed without repeating it.
+
+**Final Shot is `Vengeance`.** The talent is
+`CPD_TalentSpec_TheBaroness`, gated on `Info.Name.JaeMordant`, and the ability
+behind it is `br.AbilityID.Passive.Vengeance` — the FinalShot name survives only
+on the assets around it (`SM_FinalShot`, `GE_Cooldown_FinalShot_T*`,
+`T_UI_Abilities_FinalShot`).
+
+**The talent grants seven abilities, and only two of them are meant to be seen.**
+
+```text
+GA_Vengeance_T1 .. _T4    the four tiers of Final Shot
+GA_CoilVendetta_T1        Coil Vendetta
+GA_FinalShot_Status       internal
+GA_VengeanceListener      internal
+```
+
+One active tier, plus Coil Vendetta, plus the two internals, is exactly the four
+rows on the screen.
+
+**What separates a row that draws from one that does not** is
+`FBitReactorAbilityUIData`, read off the CDOs with UAssetAPI against
+`ZCOM-5.6.1.usmap`:
+
+| ability | `UIData.Name` | `UIData.Description` | icon | `ShouldShowInUI` |
+|---|---|---|---|---|
+| `GA_Vengeance_T1` | `GA_Vengeance_T1_Name` | `GA_Vengeance_T1_Tactical` | `T_UI_Abilities_FinalShot` | `True` |
+| `GA_CoilVendetta_T1` | `GA_CoilVendetta_T1_Name` | `GA_CoilVendetta_T1_Tactical` | `T_UI_Passives_CoilVendetta` | `True` |
+| `GA_FinalShot_Status` | unset | unset | `ResourceObject = 0` | unset |
+| `GA_VengeanceListener` | unset | unset | none — a 64×64 size and nothing to draw | unset |
+
+`ShouldShowInUI` is a native bool with no author override anywhere up either
+parent chain, so both internals inherit a visible default and are drawn with
+nothing to draw. The fallback subtitle reads PASSIVE either way:
+`GA_FinalShot_Status` still carries `br.AbilityType.Passive`, and
+`GA_VengeanceListener` carries no type tag at all.
+
+**Every other talent is clean, and that was checked rather than assumed.** All 24
+`CPD_TalentSpec_*` assets were dumped: The Baroness is the only player-facing one
+that puts internal abilities in the granted array. The Clone grants
+`GA_CloneArmorTraining` plus `GA_ForMyBrothers_T1..T4`, the Survivor grants
+`GA_Grit_T1..T4`, and so on — display abilities only.
+`CPD_TalentSpec_TheLeader_Infected` also carries a `GE_CanReceivePlague` in that
+array, but it is story-only and never reaches a roster screen. So the reason it
+is this talent and no other is that Final Shot is the one whose implementation
+needed a status ability and an event listener, and neither was hidden.
+
+**Why it is not this mod's.** `CPD_TalentSpec_TheBaroness` ships with the game,
+Core offers only `CPD_TalentSpec_TheLostPadawan` and
+`CPD_TalentSpec_TheMandalorian` in the Talent slot, and the Baroness is name-gated
+to a hero the module never names. Removing the `~mods` containers reproduces it.
+
+**Fixable, and not fixed.** A two-asset override setting
+`UIData.ShouldShowInUI = false` on `GA_FinalShot_Status` and
+`GA_VengeanceListener` would close it — a display flag, no gameplay effect, no
+identity written, well within the container pipeline already built. Not shipped,
+because it is a cosmetic defect in content this mod does not offer, on a hero
+every player already has. Recorded here so the choice is a choice.
+
+What must **not** be done is dropping the two internals from the talent's array.
+They are what makes Final Shot trigger.

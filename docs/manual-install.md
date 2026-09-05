@@ -1,6 +1,8 @@
 # Installing Open Kit
 
-This page describes the install as it will ship.
+Open Kit is on Nexus as [mod 133](https://www.nexusmods.com/games/starwarszerocompany/mods/133). Download either the **FOMOD**
+archive (for a mod manager) or the **Manual** archive (for installing by
+hand) from its Files tab.
 
 Open Kit is one module with three features — Core, Wardrobe and Armory — plus a
 few small optional pak files. You can turn any feature off, but they install

@@ -181,7 +181,16 @@ def main() -> int:
             fail(f"the installer names {source}, which is not in dist/fomod -- "
                  f"rebuild it with ./scripts/build-fomod.py")
         dest = win(destination)
-        # Nothing may land outside the game directory the player drags this over.
+        # zcom-mod.json is ZCOM Mod Manager metadata: it names a component in
+        # the manager's library and is meaningless to someone dragging files
+        # over their game directory. The containers' manifest deliberately
+        # installs to the archive root, outside SWZeroCompany, so that the
+        # manager reads it without copying it into the game -- which is exactly
+        # the shape the guard below rejects. Skip both rather than ship them.
+        if dest.name == "zcom-mod.json":
+            continue
+        # Nothing else may land outside the game directory the player drags
+        # this over.
         if dest.parts[0] != "SWZeroCompany":
             fail(f"{source} installs to {destination}, outside SWZeroCompany")
         target = build / dest

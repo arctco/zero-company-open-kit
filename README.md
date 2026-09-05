@@ -16,15 +16,16 @@ work on it.
 
 ## Status
 
-**Pre-release.** All three features are built, tested and confirmed in game, and
-both release archives — the FOMOD installer and the manual archive — are built
-and validated. An ordinary operator can be given the Padawan or Warrior kit, wear
-any of 653 catalogue garments, and carry Rex's twin DC-17s or Trick's DC-17m —
-with no identity tag written to anyone.
+**Released — v1.0.0.** Download it from
+[Nexus mod 133](https://www.nexusmods.com/games/starwarszerocompany/mods/133).
 
-Remaining before release: a release pass over the Nexus copy, and an end-to-end
-install and uninstall through a manager. Verified against game build `24874058`;
-the module refuses to hook a build it does not recognise.
+All three features are built, tested and confirmed in game. An ordinary operator
+can be given the Padawan or Warrior kit, wear any of 653 catalogue garments, and
+carry Rex's twin DC-17s or Trick's DC-17m — with no identity tag written to
+anyone.
+
+Verified against game build `24874058`; the module refuses to hook a build it
+does not recognise.
 
 ## Features
 
@@ -66,6 +67,15 @@ section. It is not a crash and nothing is corrupted. The cause is still open: a
 creation pawn carries `Info.Faction.ZeroCompany` and 86 tags against 82-85 for
 an ordinary operator, so there is nothing distinguishable to gate on, and the
 mechanism behind the softlock itself has not been found.
+
+**Rex's twin DC-17s take two picks, in that order.** Select the weapon
+specialization **Blaster (Rex)**, then go into **Customize Weapon** and choose
+the gear kit labelled **DC-17 (Rex)**. Selecting the specialization on its own
+leaves the operator holding a single pistol: the class's `DefaultPart` is
+authored to the stock kit, which is labelled "DC-17". Nothing warns you, and
+DualFire fires into the empty hand. The mispairing is the game's own, the labels
+exist to tell the two kits apart, and both hands are armed once the second pick
+is made.
 
 Smaller, cosmetic, and deliberately not fixed:
 
