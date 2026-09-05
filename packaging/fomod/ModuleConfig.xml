@@ -1,0 +1,799 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Open Kit FOMOD installer.
+
+  Deliberately restricted to the element subset that Vortex, Mod Organizer 2 and
+  the ZCOM Mod Manager all implement:
+
+      installSteps / installStep / optionalFileGroups / group / plugins / plugin
+      typeDescriptor / dependencyType / conditionFlags / files / folder / image
+      conditionalFileInstalls / patterns / pattern / flagDependency
+
+  Not used, on purpose: moduleDependencies, fileDependency, gameDependency.
+  The ZCOM Mod Manager does not parse them and Vortex's handling of file-state
+  dependencies is unreliable, so UE4SS presence is stated in the option text
+  rather than detected. scripts/check-fomod.py enforces this subset.
+
+  Rule of thumb this file follows: the FOMOD chooses which files land. The
+  options\ fragments choose how the module behaves at runtime, and the user can
+  edit them afterwards without reinstalling. Neither duplicates the other.
+
+  Every option below maps to exactly one file the module actually reads. That
+  correspondence is the whole contract: a fragment the module does not know is
+  logged as option_ignored and does nothing, so a name that drifts out of step
+  with src/ZCOMOpenKit/src/dllmain.cpp silently disables the option.
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://qconsulting.ca/fo3/ModConfig5.0.xsd">
+  <moduleName>Open Kit</moduleName>
+
+  <installSteps order="Explicit">
+
+    <installStep name="Features">
+      <optionalFileGroups order="Explicit">
+        <group name="What do you want? (all of these need UE4SS)" type="SelectAtLeastOne">
+          <plugins order="Explicit">
+
+            <plugin name="Core - specializations, talents and lightsabers">
+              <description>
+Offers the Padawan and Warrior specializations, their talents and both
+lightsaber grips to any operator.
+
+REQUIRES UE4SS for Zero Company, installed first.
+
+Nothing is written to any character. When you pick a locked part, the module
+asks the game's own requirement check on a throwaway copy of your character's
+tags, lifts exactly the one gate that part needs, and destroys the copy - so
+your operators keep their own animations, weapons and bodies.
+              </description>
+              <conditionFlags>
+                <flag name="core">on</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Recommended"/></typeDescriptor>
+            </plugin>
+
+            <plugin name="Wardrobe - the locked clothes and colours">
+              <description>
+Offers the Mandalorian beskar sets and the rest of the character-locked
+wardrobe - up to 653 parts across five slots - plus the outfit colours and
+weapon paints the game ships without offering.
+
+REQUIRES UE4SS for Zero Company, installed first.
+
+Do not combine with another wardrobe or Armory hook mod; they hook the same
+catalogue and will fight.
+              </description>
+              <conditionFlags>
+                <flag name="wardrobe">on</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Recommended"/></typeDescriptor>
+            </plugin>
+
+            <plugin name="Armory - the locked gear">
+              <description>
+Offers gear the Armory does not normally show: Trick's DC-17m, Captain Rex's
+twin DC-17 pistols, the other characters' weapons and the lightsaber hilts.
+
+REQUIRES UE4SS for Zero Company, installed first.
+
+Shares one module with the Wardrobe, so the two never fight over the same
+hooks. Do not run it alongside another Armory hook mod.
+              </description>
+              <conditionFlags>
+                <flag name="armory">on</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
+
+          </plugins>
+        </group>
+      </optionalFileGroups>
+    </installStep>
+
+    <installStep name="Core - which kits">
+      <visible>
+        <flagDependency flag="core" value="on"/>
+      </visible>
+      <optionalFileGroups order="Explicit">
+        <group name="Kits to offer" type="SelectExactlyOne">
+          <plugins order="Explicit">
+
+            <plugin name="Both kits">
+              <description>
+Padawan and Warrior. The usual choice.
+              </description>
+              <conditionFlags>
+                <flag name="kits">both</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Recommended"/></typeDescriptor>
+            </plugin>
+
+            <plugin name="Padawan only">
+              <description>
+The Padawan specialization and the Lost Padawan talent.
+Leaves the Warrior kit reserved to Cly as shipped.
+              </description>
+              <conditionFlags>
+                <flag name="kits">padawan</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
+
+            <plugin name="Warrior only">
+              <description>
+The Warrior specialization and the Mandalorian talent.
+Leaves the Padawan kit reserved to Tel-Rea as shipped.
+              </description>
+              <conditionFlags>
+                <flag name="kits">warrior</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
+
+          </plugins>
+        </group>
+      </optionalFileGroups>
+    </installStep>
+
+    <installStep name="Core - lightsabers and the second specialization">
+      <visible>
+        <flagDependency flag="core" value="on"/>
+      </visible>
+      <optionalFileGroups order="Explicit">
+        <group name="Tick what you want. Both are editable later." type="SelectAny">
+          <plugins order="Explicit">
+
+            <plugin name="Offer the lightsabers as a weapon class">
+              <description>
+Offers Tel-Rea's two-handed grip and Anakin's one-handed grip as weapon
+classes. Both are offered because which one animates correctly depends on the
+body carrying it, and the game has no gender anywhere in its customization
+data for the mod to choose from.
+
+OFF BY DEFAULT, AND READ THIS FIRST: with this on, the character creator will
+show a saber at the weapon class step and will not accept it, and a character
+finished with no weapon class reaches the tutorial holding nothing and cannot
+continue. The tutorial cannot recruit, so that costs the playthrough.
+
+Safe use: leave this on and simply pick an ordinary blaster during character
+creation, then switch to a saber afterwards from the operator screen, where it
+works properly. If you would rather the option not be there at all during
+creation, leave this unticked.
+
+Known cosmetic fault either way: the blade stays lit, and sprinting breaks the
+grip until you stop.
+              </description>
+              <conditionFlags>
+                <flag name="saber">on</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
+
+            <plugin name="Offer Wayseeker as a second specialization">
+              <description>
+Offers CPD_TacticalSpec_PadawanExtended - "Wayseeker" - in the second
+specialization slot: Lightsaber Throw, Force Pull and An Elegant Weapon.
+
+This is a real authored part, not a stand-in. Warrior has no equivalent
+anywhere in the game and stays first-slot only whatever you pick here.
+              </description>
+              <conditionFlags>
+                <flag name="padsecond">on</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Recommended"/></typeDescriptor>
+            </plugin>
+
+          </plugins>
+        </group>
+      </optionalFileGroups>
+    </installStep>
+
+    <installStep name="Core - hero kit swapping">
+      <visible>
+        <flagDependency flag="core" value="on"/>
+      </visible>
+      <optionalFileGroups order="Explicit">
+        <group name="Changing a hero kit once it is equipped" type="SelectExactlyOne">
+          <plugins order="Explicit">
+
+            <plugin name="Leave hero kits pinned (as shipped)">
+              <description>
+The stock behaviour. Once an operator takes a hero specialization or talent,
+that part stays put and cannot be swapped back off.
+
+Safest option. Removing Open Kit later cannot strand anybody, because nobody
+can be holding a part in a state the base game does not allow.
+              </description>
+              <conditionFlags>
+                <flag name="swap">off</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Recommended"/></typeDescriptor>
+            </plugin>
+
+            <plugin name="Let hero kits be swapped off again">
+              <description>
+Specialization and talent stay changeable after a hero kit is applied, the way
+an ordinary recruit's are.
+
+READ THIS BEFORE PICKING IT: an operator left holding a hero part when Open Kit
+is removed - or when a game update stops it applying - will show that slot as
+locked and be unable to change it. Put everyone back on stock specializations
+and save before uninstalling. See docs/manual-install.md.
+
+This also unlocks respeccing for Tel-Rea and Cly themselves, which is a change
+to authored behaviour rather than to what the game offers you.
+              </description>
+              <conditionFlags>
+                <flag name="swap">on</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
+
+          </plugins>
+        </group>
+      </optionalFileGroups>
+    </installStep>
+
+    <installStep name="Wardrobe - how much of it">
+      <visible>
+        <flagDependency flag="wardrobe" value="on"/>
+      </visible>
+      <optionalFileGroups order="Explicit">
+        <group name="The Mandalorian sets are always included. Tick to widen." type="SelectAny">
+          <plugins order="Explicit">
+
+            <plugin name="Cly Kullervo's own armour">
+              <description>
+Cly's personal beskar set and both of her helmets, on top of the two generic
+Mandalorian families.
+              </description>
+              <conditionFlags>
+                <flag name="wcly">on</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Recommended"/></typeDescriptor>
+            </plugin>
+
+            <plugin name="Tel-Rea's Jedi robes">
+              <description>
+Ten parts, both variants across five slots.
+
+Each piece ships a single mesh marked short, thin and feminine. Those tags are
+a best-match hint rather than a requirement, so the robes draw on anybody -
+whether they suit your operator is your call.
+              </description>
+              <conditionFlags>
+                <flag name="wjedi">on</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Recommended"/></typeDescriptor>
+            </plugin>
+
+            <plugin name="Everyone else's clothes">
+              <description>
+Every garment the game reserves to a named character: Hawks, Kabb, Jae, Baker,
+Luco, Trick, Dozen, Sawtooth, the Commander and Visser. 54 parts.
+              </description>
+              <conditionFlags>
+                <flag name="wheroes">on</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Recommended"/></typeDescriptor>
+            </plugin>
+
+            <plugin name="Anakin's outfit">
+              <description>
+Anakin's Jedi outfit - arms, boots, legs and torso.
+              </description>
+              <conditionFlags>
+                <flag name="wanakin">on</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
+
+            <plugin name="The authored-only wardrobe">
+              <description>
+The largest single group of clothes in the game - 245 parts marked "assigned by
+authoring, never chosen by a player".
+
+No character in the game can earn this mark, so nothing is being taken from
+anybody. It names nobody either, so unlike a hero's name it cannot pull one
+character's appearance onto another.
+              </description>
+              <conditionFlags>
+                <flag name="wauthored">on</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Recommended"/></typeDescriptor>
+            </plugin>
+
+            <plugin name="Every outfit family for every character">
+              <description>
+The right to wear a family of clothes comes from a character's class, and the
+authored heroes have far poorer classes than the people you recruit - Cly has
+one family, Tel-Rea none, against fourteen for any recruit.
+
+This levels them up to a recruit's list rather than levelling anyone down. It
+costs your recruits nothing.
+              </description>
+              <conditionFlags>
+                <flag name="wfamilies">on</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Recommended"/></typeDescriptor>
+            </plugin>
+
+            <plugin name="Human helmets on any species">
+              <description>
+75 helmets require an operator's species to be one they were shaped for, and
+only Human, Clone, Mirialan and Umbaran qualify. Everyone else sees a much
+smaller list, and Felshi, Tognath and the droids see none at all.
+
+This is the one option here that changes a FIT rather than a permission: a
+helmet shaped for a human skull will have to sit on montrals, lekku, horns or a
+snout, and some combinations will look wrong. That is a look rather than a bug.
+              </description>
+              <conditionFlags>
+                <flag name="whelmets">on</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
+
+            <plugin name="Clothes the campaign has not unlocked yet">
+              <description>
+116 parts the campaign hands out as you play.
+
+OFF BY DEFAULT because turning it on changes the game's pacing rather than
+lifting a lock - it gives you rewards the save has not earned.
+              </description>
+              <conditionFlags>
+                <flag name="wstory">on</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
+
+          </plugins>
+        </group>
+      </optionalFileGroups>
+    </installStep>
+
+    <installStep name="Wardrobe - colours">
+      <visible>
+        <flagDependency flag="wardrobe" value="on"/>
+      </visible>
+      <optionalFileGroups order="Explicit">
+        <group name="Colours the game ships but does not offer" type="SelectAny">
+          <plugins order="Explicit">
+
+            <plugin name="The locked colours and weapon paints">
+              <description>
+40 outfit colours and all 90 locked weapon paints, each with its own picker
+label so you can tell Amber 02 from Amber 13.
+
+The 40 are curated by eye rather than by count: of the game's 335 locked outfit
+colours, 82 are within a rounding error of one already in your picker and 126
+more are too close to tell apart on a swatch.
+
+This is Sternab's Zero Company Expanded Colours, MIT licensed and adapted with
+attribution. Do not run both - they add the same colours through the same hook.
+              </description>
+              <conditionFlags>
+                <flag name="colours">on</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Recommended"/></typeDescriptor>
+            </plugin>
+
+            <plugin name="95 more outfit colours">
+              <description>
+Every remaining locked colour that is at least 0.05 away in linear RGB from
+anything you can already choose - measured rather than picked. Together with
+the set above that is 135 of the 335.
+
+Needs the option above; this widens that palette rather than replacing it.
+              </description>
+              <conditionFlags>
+                <flag name="coloursextra">on</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
+
+          </plugins>
+        </group>
+      </optionalFileGroups>
+    </installStep>
+
+    <installStep name="Armory - which gear">
+      <visible>
+        <flagDependency flag="armory" value="on"/>
+      </visible>
+      <optionalFileGroups order="Explicit">
+        <group name="Gear to offer in the Armory" type="SelectAny">
+          <plugins order="Explicit">
+
+            <plugin name="The DC-17m">
+              <description>
+Trick's clone-commando rifle: three fire modes, its own abilities, attributes,
+animations and icon. Offered under its authored name, "DC-17m Weapon System".
+              </description>
+              <conditionFlags>
+                <flag name="dc17m">on</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Recommended"/></typeDescriptor>
+            </plugin>
+
+            <plugin name="Captain Rex's twin DC-17 pistols">
+              <description>
+The only dual-wield kit in the game, and the only part granting the DualFire
+ability - your operator carries a pistol in each hand and fires both.
+
+Pick the tile labelled "DC-17 (Rex)". The stock single-pistol kit is labelled
+"DC-17" and the two are easy to confuse, which is exactly why the mod adds the
+labels.
+
+Cosmetic fault: the tile draws another weapon's picture, because the part ships
+no icon of its own. The weapon that equips is correct.
+              </description>
+              <conditionFlags>
+                <flag name="rexpistol">on</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Recommended"/></typeDescriptor>
+            </plugin>
+
+            <plugin name="The other characters' weapons">
+              <description>
+The remaining hero weapon classes and gear kits the Armory does not offer.
+              </description>
+              <conditionFlags>
+                <flag name="heroweapons">on</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Recommended"/></typeDescriptor>
+            </plugin>
+
+            <plugin name="The lightsaber hilts">
+              <description>
+Tel-Rea's hilt and the Inquisitor's, in the Armory's weapon-model picker. Also
+names the three unlabelled melee kits the game already had - Coil Striker,
+Scourger and Slugrat Hook.
+
+Needs the lightsaber weapon class from the Core step, since only that class
+opens these screens at all. Installs an extra pak file: the game switches the
+Armory's Change, Customize and Modify Weapon screens off entirely whenever a
+lightsaber is equipped, and that gate lives in a widget rather than in any
+part.
+
+KNOWN LIMIT: the Inquisitor hilt can be looked at and not selected on an
+ordinary operator. The game gates it on being an authored character, and no tag
+this mod can add satisfies that - it was measured rather than assumed. Tel-Rea's
+own hilt works.
+              </description>
+              <conditionFlags>
+                <flag name="sabers">on</flag>
+              </conditionFlags>
+              <typeDescriptor><type name="Optional"/></typeDescriptor>
+            </plugin>
+
+          </plugins>
+        </group>
+      </optionalFileGroups>
+    </installStep>
+
+  </installSteps>
+
+  <conditionalFileInstalls>
+    <patterns>
+
+      <!-- The module itself. One DLL, whichever features are wanted.
+           zcom-mod.json rides along so the ZCOM Mod Manager names this
+           component "Open Kit - Module" rather than falling back to the
+           installer's own title. Without a manifest beside each payload the
+           manager synthesises one from fomod/info.xml and applies it to every
+           component, so the module and the containers both show as "Open Kit".
+           The manager reads these and never copies them into the game. -->
+      <pattern>
+        <dependencies operator="Or">
+          <flagDependency flag="core" value="on"/>
+          <flagDependency flag="wardrobe" value="on"/>
+          <flagDependency flag="armory" value="on"/>
+        </dependencies>
+        <files>
+          <folder source="native\common"
+                  destination="SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit"/>
+          <file source="manifests\module.json"
+                destination="SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit\zcom-mod.json"/>
+        </files>
+      </pattern>
+
+      <!-- The container manifest, installed only when a container actually
+           lands: the row refit and the pairing come with Core, the saber lock
+           with the hilts. An orphan manifest with no payload beneath it would
+           describe a component that does not exist.
+
+           It goes at the INSTALL ROOT, not beside the paks. The ZCOM Mod
+           Manager treats any unclaimed file whose path contains a
+           "SWZeroCompany" component as a game-folder mod, so a manifest under
+           Content\Paks\~mods becomes a third component named after itself and
+           is copied into the game. At the root it has no such component, so the
+           manager reads it, drops it, and installs nothing extra.
+
+           The module's own manifest sits deeper, inside the mod folder, and the
+           manager picks the closest manifest above each component's files - so
+           the deeper one names the module and this one names the containers. -->
+      <pattern>
+        <dependencies operator="Or">
+          <flagDependency flag="core" value="on"/>
+          <flagDependency flag="sabers" value="on"/>
+        </dependencies>
+        <files>
+          <file source="manifests\containers.json"
+                destination="zcom-mod.json"/>
+        </files>
+      </pattern>
+
+      <!-- The row refit. Needed by anyone running Core, because the extra
+           specialization and talent cards overflow a frame authored for the
+           stock count. -->
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="core" value="on"/>
+        </dependencies>
+        <files>
+          <folder source="ui-fit" destination="SWZeroCompany\Content\Paks\~mods"/>
+        </files>
+      </pattern>
+
+      <!-- The picker container: pairs a primary specialization with a
+           secondary, and in -swap form also lifts the respec lock. -->
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="kits" value="both"/>
+          <flagDependency flag="swap" value="off"/>
+        </dependencies>
+        <files>
+          <folder source="core\both" destination="SWZeroCompany\Content\Paks\~mods"/>
+        </files>
+      </pattern>
+
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="kits" value="both"/>
+          <flagDependency flag="swap" value="on"/>
+        </dependencies>
+        <files>
+          <folder source="core\both-swap" destination="SWZeroCompany\Content\Paks\~mods"/>
+        </files>
+      </pattern>
+
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="kits" value="padawan"/>
+          <flagDependency flag="swap" value="off"/>
+        </dependencies>
+        <files>
+          <folder source="core\padawan" destination="SWZeroCompany\Content\Paks\~mods"/>
+        </files>
+      </pattern>
+
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="kits" value="padawan"/>
+          <flagDependency flag="swap" value="on"/>
+        </dependencies>
+        <files>
+          <folder source="core\padawan-swap" destination="SWZeroCompany\Content\Paks\~mods"/>
+        </files>
+      </pattern>
+
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="kits" value="warrior"/>
+          <flagDependency flag="swap" value="off"/>
+        </dependencies>
+        <files>
+          <folder source="core\warrior" destination="SWZeroCompany\Content\Paks\~mods"/>
+        </files>
+      </pattern>
+
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="kits" value="warrior"/>
+          <flagDependency flag="swap" value="on"/>
+        </dependencies>
+        <files>
+          <folder source="core\warrior-swap" destination="SWZeroCompany\Content\Paks\~mods"/>
+        </files>
+      </pattern>
+
+      <!-- Core option fragments. -->
+      <pattern>
+        <dependencies operator="Or">
+          <flagDependency flag="kits" value="both"/>
+          <flagDependency flag="kits" value="padawan"/>
+        </dependencies>
+        <files>
+          <file source="options\padawan.ini"
+                destination="SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit\options\padawan.ini"/>
+        </files>
+      </pattern>
+
+      <pattern>
+        <dependencies operator="Or">
+          <flagDependency flag="kits" value="both"/>
+          <flagDependency flag="kits" value="warrior"/>
+        </dependencies>
+        <files>
+          <file source="options\warrior.ini"
+                destination="SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit\options\warrior.ini"/>
+        </files>
+      </pattern>
+
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="saber" value="on"/>
+        </dependencies>
+        <files>
+          <file source="options\padawan-saber.ini"
+                destination="SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit\options\padawan-saber.ini"/>
+        </files>
+      </pattern>
+
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="padsecond" value="on"/>
+        </dependencies>
+        <files>
+          <file source="options\padawan-secondary.ini"
+                destination="SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit\options\padawan-secondary.ini"/>
+        </files>
+      </pattern>
+
+      <!-- Wardrobe option fragments. wardrobe.ini is the base set. -->
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="wardrobe" value="on"/>
+        </dependencies>
+        <files>
+          <file source="options\wardrobe.ini"
+                destination="SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit\options\wardrobe.ini"/>
+        </files>
+      </pattern>
+
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="wcly" value="on"/>
+        </dependencies>
+        <files>
+          <file source="options\wardrobe-cly.ini"
+                destination="SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit\options\wardrobe-cly.ini"/>
+        </files>
+      </pattern>
+
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="wjedi" value="on"/>
+        </dependencies>
+        <files>
+          <file source="options\wardrobe-jedi.ini"
+                destination="SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit\options\wardrobe-jedi.ini"/>
+        </files>
+      </pattern>
+
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="wheroes" value="on"/>
+        </dependencies>
+        <files>
+          <file source="options\wardrobe-heroes.ini"
+                destination="SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit\options\wardrobe-heroes.ini"/>
+        </files>
+      </pattern>
+
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="wanakin" value="on"/>
+        </dependencies>
+        <files>
+          <file source="options\wardrobe-anakin.ini"
+                destination="SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit\options\wardrobe-anakin.ini"/>
+        </files>
+      </pattern>
+
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="wauthored" value="on"/>
+        </dependencies>
+        <files>
+          <file source="options\wardrobe-authored.ini"
+                destination="SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit\options\wardrobe-authored.ini"/>
+        </files>
+      </pattern>
+
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="wfamilies" value="on"/>
+        </dependencies>
+        <files>
+          <file source="options\wardrobe-families.ini"
+                destination="SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit\options\wardrobe-families.ini"/>
+        </files>
+      </pattern>
+
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="whelmets" value="on"/>
+        </dependencies>
+        <files>
+          <file source="options\wardrobe-helmets.ini"
+                destination="SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit\options\wardrobe-helmets.ini"/>
+        </files>
+      </pattern>
+
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="wstory" value="on"/>
+        </dependencies>
+        <files>
+          <file source="options\wardrobe-story.ini"
+                destination="SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit\options\wardrobe-story.ini"/>
+        </files>
+      </pattern>
+
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="colours" value="on"/>
+        </dependencies>
+        <files>
+          <file source="options\colours.ini"
+                destination="SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit\options\colours.ini"/>
+        </files>
+      </pattern>
+
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="coloursextra" value="on"/>
+        </dependencies>
+        <files>
+          <file source="options\colours-extra.ini"
+                destination="SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit\options\colours-extra.ini"/>
+        </files>
+      </pattern>
+
+      <!-- Armory option fragments. -->
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="dc17m" value="on"/>
+        </dependencies>
+        <files>
+          <file source="options\armoury-dc17m.ini"
+                destination="SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit\options\armoury-dc17m.ini"/>
+        </files>
+      </pattern>
+
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="rexpistol" value="on"/>
+        </dependencies>
+        <files>
+          <file source="options\armoury-rex-pistol.ini"
+                destination="SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit\options\armoury-rex-pistol.ini"/>
+        </files>
+      </pattern>
+
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="heroweapons" value="on"/>
+        </dependencies>
+        <files>
+          <file source="options\armoury-hero-weapons.ini"
+                destination="SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit\options\armoury-hero-weapons.ini"/>
+        </files>
+      </pattern>
+
+      <pattern>
+        <dependencies operator="And">
+          <flagDependency flag="sabers" value="on"/>
+        </dependencies>
+        <files>
+          <file source="options\armoury-sabers.ini"
+                destination="SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit\options\armoury-sabers.ini"/>
+          <folder source="saber-armoury" destination="SWZeroCompany\Content\Paks\~mods"/>
+        </files>
+      </pattern>
+
+    </patterns>
+  </conditionalFileInstalls>
+</config>

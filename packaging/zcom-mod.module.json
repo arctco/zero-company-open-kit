@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "community.open-kit.module",
+  "name": "Open Kit - Module",
+  "version": "1.0.0",
+  "description": "The native module: specializations, talents, the wardrobe, the colour palettes and the Armory gear, each behind its own option fragment.",
+  "game": {
+    "appId": 2075800,
+    "testedBuilds": ["24874058"],
+    "strict": true
+  },
+  "type": ["ue4ss"],
+  "requires": {
+    "ue4ss": true
+  }
+}

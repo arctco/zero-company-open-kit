@@ -1,0 +1,63 @@
+Open Kit seam probe
+===================
+
+This is a diagnostic, not a mod. It changes nothing in the game: every hook
+calls the original function and only records what it saw. Nothing is unlocked,
+nothing is added, no save is touched.
+
+It exists to answer one question that cannot be answered by reading the game's
+data: which of Zero Company's four customization enumerators produces the
+specialization cards.
+
+Requires
+--------
+- Star Wars: Zero Company, Steam build 24874058. The probe refuses to run on any
+  other build rather than risk hooking the wrong addresses.
+- UE4SS for Zero Company, installed first.
+
+Install
+-------
+1. Close the game.
+2. In Steam: right-click the game, Manage, Browse local files.
+3. Go into SWZeroCompany, then Binaries, then Win64.
+4. Drag the "ue4ss" folder from this archive into that Win64 folder and merge.
+
+You should end up with:
+
+  SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKitSeamProbe\enabled.txt
+  SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKitSeamProbe\dlls\main.dll
+
+What to do
+----------
+1. Launch the game and load a save, or start a campaign.
+2. Open the screen where an operator is given a specialization -- the focus tree
+   assign screen. This only appears for an operator who has a specialization
+   slot still to fill, so use a newly recruited one if you can.
+3. Open the wardrobe on any operator. This is the control: the wardrobe is known
+   to run through GetCustomizationPartDefinitions, so if the probe reports
+   nothing there, it is not working and nothing else it says means anything.
+4. Quit the game.
+5. Send SWZeroCompany\Binaries\Win64\ue4ss\UE4SS.log.
+
+Remove
+------
+Delete SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKitSeamProbe.
+
+What it logs
+------------
+Lines tagged [ZCOM_OPEN_KIT_PROBE]. One per seam, with how many times it was
+called, the largest result it returned, and which watched parts appeared in that
+result. Then, once per seam, the gameplay tags the caller passed.
+
+The watched parts are the six hero kit parts, plus CPD_TacticalSpec_Soldier as a
+control: the stock game offers it to everyone, so a seam that never yields it can
+be ruled out as the wrong seam rather than mistaken for a locked one.
+CPD_H_Outfit_Man001A_TORS is watched too, but it is not a control -- it is a
+locked Mandalorian part the stock game does not offer, so its absence is the
+expected result rather than a fault.
+
+A separate line reports which watched parts the probe could resolve at all. A
+part that never resolved cannot be seen in any result, so its absence would mean
+nothing; that line is what tells the two cases apart.
+
+Nothing in the log identifies you, your save, or your machine.

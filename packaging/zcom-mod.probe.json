@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "community.open-kit.probe",
+  "name": "Open Kit - Diagnostic Probe",
+  "version": "0.3.0",
+  "description": "Reads the focus-tree picker back out of the running game and logs what Core actually did. Test aid only; installs nothing.",
+  "game": {
+    "appId": 2075800,
+    "testedBuilds": [
+      "24874058"
+    ],
+    "strict": false
+  },
+  "type": [
+    "ue4ss-lua"
+  ],
+  "requires": {
+    "ue4ss": true
+  }
+}

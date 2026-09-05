@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fomod>
+  <Name>Open Kit</Name>
+  <Author>arctco</Author>
+  <Version MachineVersion="1.0.0">1.0.0</Version>
+  <Website>https://github.com/arctco/zero-company-open-kit</Website>
+  <Description>
+    Hero kits for the rest of your company: the Padawan and Warrior
+    specializations, their talents and both lightsaber grips, the locked
+    wardrobe and colour palettes, and the locked Armory gear. Nothing is
+    written to any character. Requires UE4SS. MIT licensed, source in the
+    open.
+  </Description>
+  <Groups>
+    <element>Gameplay</element>
+    <element>Appearance</element>
+  </Groups>
+</fomod>

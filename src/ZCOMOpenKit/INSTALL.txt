@@ -1,0 +1,319 @@
+Open Kit
+========
+
+Offers the Padawan and Warrior kits, the locked wardrobe and the locked Armory
+gear to every operator in your company, without telling anyone they are Tel-Rea
+or Cly.
+
+Requires
+--------
+- Star Wars: Zero Company, Steam build 24874058. Open Kit refuses to run on any
+  other build rather than risk writing to the wrong addresses.
+- UE4SS for Zero Company, installed first.
+
+Install
+-------
+1. Close the game.
+2. In Steam: right-click the game, Manage, Browse local files.
+3. Go into SWZeroCompany, then Binaries, then Win64.
+4. Drag the "ue4ss" folder from this archive into that Win64 folder and merge.
+
+You should end up with:
+
+  SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit\enabled.txt
+  SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit\dlls\main.dll
+
+Remove
+------
+Delete SWZeroCompany\Binaries\Win64\ue4ss\Mods\ZCOMOpenKit.
+
+Nothing is written to your save, so removing the mod removes the offer. This has
+been tested: a save whose operators wear modded outfits loads cleanly with the
+mod gone, the characters keep the look, and the parts are simply no longer in the
+picker. That works because Open Kit adds no assets -- everything it offers ships
+with the game already, and the mod only stops hiding it.
+
+Specializations are the one case to be careful with. If you installed a "-swap"
+pak, put everyone back on a stock specialization, talent and weapon and save
+BEFORE removing the mod; otherwise the game may show that slot as locked. Without
+a "-swap" pak, hero kits stay pinned once taken and there is nothing to do.
+
+Options
+-------
+Open Kit reads an "options" folder next to enabled.txt. Each file is one switch,
+and the file only has to exist -- its contents are ignored.
+
+  options\padawan.ini            offer the Padawan kit
+  options\warrior.ini            offer the Warrior kit
+  options\padawan-secondary.ini  also offer Padawan as a SECOND specialization
+                                 (needs the pairing container -- see below)
+  options\padawan-saber.ini      also offer the two lightsabers as weapon
+                                 classes -- OFF, and read the warning below
+  options\wardrobe.ini           offer the Mandalorian armour sets (Man001,
+                                 Man002) in the wardrobe
+  options\wardrobe-cly.ini       also offer Cly Kullervo's own armour and both
+                                 of her helmets
+  options\wardrobe-jedi.ini      also offer Tel-Rea's Jedi robes, in two
+                                 variants
+  options\wardrobe-heroes.ini    also offer everyone else's clothes -- Hawks,
+                                 Kabb, Jae, Baker, Luco, Trick, Dozen,
+                                 Sawtooth, the Commander, Visser
+  options\wardrobe-anakin.ini    also offer Anakin's Jedi outfit
+  options\wardrobe-authored.ini  also offer the "authored only" wardrobe --
+                                 the largest single group, 245 parts
+  options\wardrobe-helmets.ini   also let NON-HUMAN operators wear the human
+                                 helmets (read the note below)
+  options\wardrobe-families.ini  offer every outfit family to every character --
+                                 this is what lets Cly, Tel-Rea and the other
+                                 story characters wear what Hawks wears
+  options\wardrobe-story.ini     also offer clothes the campaign has not
+                                 unlocked yet -- OFF by default, because it
+                                 hands you rewards the save has not earned
+  options\colours.ini            add 40 outfit colours and 90 weapon paints
+                                 the game ships but does not offer you
+  options\colours-extra.ini      add 95 more outfit colours on top of those
+                                 (needs colours.ini)
+  options\armoury-dc17m.ini      offer Trick's DC-17m Weapon System
+  options\armoury-rex-pistol.ini offer Captain Rex's twin DC-17 pistols
+  options\armoury-hero-weapons.ini  offer the other characters' weapons
+  options\armoury-sabers.ini     offer the lightsaber hilts in the Armory
+                                 (needs the saber-armoury pak, and
+                                 padawan-saber.ini, to be visible at all)
+
+If there is no "options" folder at all, the defaults apply: everything on except
+wardrobe-story and padawan-saber. If the folder exists, it is taken literally --
+a switch whose file is not there is off.
+
+A switch this version does not recognise is logged and ignored rather than
+treated as an error, so an older DLL survives a newer install.
+
+The lightsabers, and why they are off
+-------------------------------------
+Turning on padawan-saber offers two lightsabers as weapon classes: Tel-Rea's,
+which is held in two hands, and Anakin's, which is held in one.
+
+There are two of them because which one looks right depends on the operator
+carrying it, and the game gives no way to pick for you -- there is no gender
+anywhere in its customization data, only species and body type. So both are
+offered and you keep whichever animates correctly on your character.
+
+Tested so far: Anakin's ONE-HANDED saber is the better of the two. It is held
+correctly walking around the ship and it fights correctly in combat. Sprinting is
+the one thing it gets wrong -- hold shift to run and the grip breaks until you
+stop. Tel-Rea's two-handed one is worse on a male operator. Try both on the
+operator you care about.
+
+They work on an operator who already exists: you can equip one, it is carried on
+the back, and it has been used through a full mission.
+
+DO NOT pick one while CREATING a character. The weapon class step there will
+show a saber but will not accept it -- no tick ever appears -- and if you leave
+that step without a weapon class the character reaches the tutorial holding
+nothing, unable to fire the shot the tutorial asks for. Choose an ordinary
+blaster during creation and switch to a saber afterwards, from the operator
+screen, where it works properly.
+
+The kits themselves are unaffected either way. The Jedi and Mandalorian
+specializations, their talents and their abilities all work with this switched
+off.
+
+The wardrobe
+------------
+653 parts in total, across five slots -- torso, legs, arms, boots and helmet.
+wardrobe.ini alone is the sixteen Mandalorian parts from the two generic armour
+families; the other switches widen it from there.
+
+They are cosmetic: an outfit part in this game carries a mesh, a footstep sound
+and, on the armoured legs, a wider stance. It carries no ability and no
+attribute.
+
+Tel-Rea's Jedi robes are offered too, under wardrobe-jedi. They were left out of
+the first build on the theory that they would not draw on anyone but her -- each
+piece ships a single mesh marked short, thin and feminine. That turned out to be
+wrong: the body tags on a mesh are a best-match hint rather than a requirement,
+so they draw on anybody. Whether they FIT your operator is your call, the same
+way the two lightsaber grips are.
+
+Colours
+-------
+The game ships 455 outfit colours and offers you 119 of them; the rest are
+marked "authored only", the same lock the clothes were behind. colours.ini adds
+40 of them plus 90 weapon paints, each with its own picker label so you can tell
+Amber 02 from Amber 13.
+
+colours.ini adds Sternab's 40, curated by eye. colours-extra.ini adds 95 more,
+picked by measuring instead: every locked colour at least 0.05 away in linear
+RGB from anything you can already choose. Together that is 135 of the 335.
+
+The other 200 are left out because they are not really colours you do not have:
+82 are within a rounding error of one already in your picker and 126 more are
+too close to tell apart on a swatch. Six more are excluded by name -- four
+developer test ramps and two shades belonging to a specific character.
+
+All 90 locked weapon paints are offered by colours.ini; there is no extra set
+for those, because there is nothing left.
+
+This half of the mod is Sternab's Zero Company Expanded Colours, MIT licensed
+and adapted with attribution. Do not run both -- they add the same colours
+through the same hook.
+
+Everyone's clothes, not just the Mandalorians'
+----------------------------------------------
+wardrobe-heroes offers every garment the game reserves to a named character:
+Hawks's jackets, Kabb's gear, Jae's, Baker's, Luco's, Trick's, and the Dozen,
+Sawtooth, Commander and Visser sets. wardrobe-anakin offers Anakin's outfit.
+
+Some things are deliberately left out, and all of them for reasons read out of
+the game's own data rather than chosen:
+
+- Backpacks. A torso that should have one already carries it.
+- Fathom's head. It is a face, not a garment.
+- Five torsos -- Kabb's three and Tel-Rea's full robe -- that replace the
+  wearer's BODY rather than dressing it. Kabb is a Herglic; his torso would put
+  his body on your operator.
+
+Why the story characters had less than Hawks
+--------------------------------------------
+The right to wear a family of clothes comes from your character's CLASS, and the
+authored heroes have much poorer classes than the people you recruit:
+
+  Hawks and every recruit    14 outfit families
+  Luco                       11
+  Cly                         1  -- Mandalorian only
+  Tel-Rea                     0  -- none at all
+
+That is why Cly could not wear most of what Hawks could. wardrobe-families
+offers every family to everybody, which levels them up to Hawks rather than
+levelling anyone down. It costs Hawks nothing.
+
+Why two operators saw different wardrobes
+-----------------------------------------
+Because 75 helmets require your operator's species to be one the helmet fits,
+and only Human, Clone, Mirialan and Umbaran qualify. A Rodian, Togruta, Zabrak,
+Twi'lek, Weequay, Devaronian, Ovissian or Neimoidian was offered a much smaller
+list, and Felshi, Tognath and droids were offered none at all.
+
+wardrobe-helmets lifts that, so every operator sees the same helmets. This is
+the one switch here that changes a FIT rather than a permission: a helmet shaped
+for a human skull now has to sit on montrals, lekku, horns or a snout. Some
+combinations will look wrong. That is a look rather than a bug, and it is your
+call -- delete the file if you would rather have the smaller, tidier list.
+
+What is still not offered, and why
+----------------------------------
+- Anything requiring the Deluxe or preorder edition. Those 66 parts are content
+  sold separately; this mod does not hand them out.
+- Eight parts needing a non-human skeleton -- Kabb's gear wants a Herglic body.
+  The game refuses these for your operators and it is right to.
+- Sixteen clone-boot tint variants whose data this mod could not read reliably
+  enough to know which slot they belong in. Better absent than in the wrong list.
+- Thirteen parts of the Clo009 and Plague Trooper sets, which claim to be arm
+  wear while being named and modelled as torsos, helmets, boots and legs.
+  Offering those would have put a torso on your operator's forearms.
+- Backpacks, which a torso already carries, and five costumes that replace the
+  wearer's whole body rather than dressing it.
+
+Mandalorian helmets get a render fit so a wide face does not clip through the
+visor. Cly's and Tel-Rea's helmets do not have one yet, because nobody has
+measured what they need; report it if one of them clips.
+
+It does not fix the lightsaber grip. That was worth checking, because it was
+reported elsewhere that wearing Tel-Rea's outfit gives an operator her saber
+animations; it does not, and the game's own data says why. An animation set is
+chosen by the WEAPON a character carries, never by what they are wearing, and
+Tel-Rea's outfit parts carry no animation and contribute no tags to anyone. See
+docs/INVESTIGATION.md if you want the working.
+
+Her outfit is not offered here in any case. It is authored for exactly one
+body: each piece ships a single mesh, marked short, thin and feminine, so on
+anyone else there would be nothing to draw. The Mandalorian armour ships both a
+masculine and a feminine mesh, which is why it can be offered to your whole
+company.
+
+Why there is no Anakin or Rex class
+-----------------------------------
+Both exist in the game's data, and neither is offered here, because neither is a
+player specialization. The game writes its tactical specializations in two
+families: the ones you can be given require a "slot" tag, and the ones belonging
+to scripted characters require a capability tag instead. Anakin and Rex are in
+the second family -- alongside every enemy in the game.
+
+The Jedi and Mandalorian kits are in the first. They are ordinary player
+specializations that happen to be reserved for one character by name, which is
+why this mod can offer them without pretending anyone is somebody else. Anakin's
+is not, and offering it would mean claiming your operator is a scripted pawn.
+
+About the second specialization slot
+------------------------------------
+The Jedi and Mandalorian kits are FIRST specializations. That is the game's
+decision, not a limitation of this mod: every stock specialization ships a
+separate "_Secondary" part that the game equips when you pick it for the second
+slot, and Padawan and Warrior are the only two with no such part anywhere in the
+game. Offered as a second specialization they come out with no abilities.
+
+Padawan can be made to work there with the optional pairing container, which
+tells the picker to use PadawanExtended -- the nearest thing the game ships --
+as its second-slot form. Warrior has no equivalent and is first-slot only.
+
+You can add or delete these files whenever you like without reinstalling.
+
+The Armory
+----------
+Four switches offer gear the Armory does not normally show you.
+
+armoury-dc17m offers Trick's DC-17m Weapon System -- a complete weapon with
+three fire modes, its own abilities, attributes, animations and icon.
+
+armoury-rex-pistol offers Captain Rex's twin DC-17s. These are the only
+dual-wield kit in the game, and the only part granting the DualFire ability. Pick
+the tile labelled "DC-17 (Rex)"; the stock single-pistol kit is labelled "DC-17"
+and is easy to confuse with it, which is exactly why the labels were added.
+
+armoury-hero-weapons offers the other named characters' weapons.
+
+armoury-sabers offers the lightsaber hilts, and needs the most from you: the
+saber-armoury pak must be installed, and padawan-saber.ini must be on, or there
+is nothing to see. Even then the Inquisitor hilt can be looked at and not
+selected on an ordinary operator -- the game gates it on being an authored
+character, and no tag this mod can add satisfies that. It was measured rather
+than assumed; see docs/INVESTIGATION.md.
+
+Some Armory tiles draw the wrong picture -- Rex's DC-17 and every melee hilt show
+another weapon's art, and the model preview says IMAGE MISSING. Those parts ship
+no icon of their own and the game substitutes rather than drawing blank. The
+weapon that actually equips is correct. Cosmetic, and not fixed.
+
+How it works, and what it does not do
+-------------------------------------
+Open Kit adds parts to the lists the game offers you. It changes nothing about
+any character.
+
+That matters because of how this game finds parts. A character's name is not a
+label on them -- it is a lookup key, and hero content is found VIA the name tags
+a character carries. Give an operator a hero's name and you give them that hero's
+whole character: their animations, their weapons, and in some cases their body.
+
+So Open Kit never writes a name onto anybody. When you pick a locked part, it
+asks the game's own requirement check on a throwaway copy of your character's
+tags, lifts exactly the one gate that part needs, and destroys the copy. Every
+other requirement is still answered about the real you -- an Astromech is still
+refused Mandalorian armour, as authored, and the mod never learns it happened.
+
+The cost of doing it this way is that it has to be a code mod. A pak alone
+cannot add to any of these lists, because they are all assembled in the game's
+own code. That is the trade: Open Kit needs UE4SS and is pinned to a game build,
+where a data-only mod would not be.
+
+The wardrobe here derives from Sternab's Zero Company Mandalorian Wardrobe, which
+is MIT licensed and came first: https://github.com/Sternab/ZeroCompanyMandoWardrobe
+Run one or the other, not both -- they offer the same parts through the same
+seam. See THIRD_PARTY_NOTICES.md.
+
+Trouble
+-------
+Check SWZeroCompany\Binaries\Win64\ue4ss\UE4SS.log for a line starting
+[ZCOM_OPEN_KIT]. "READY" means it is running. "REFUSED" names the reason, and
+the usual one is a game update this build has not been verified against.
+
+Source, and the investigation behind it, are at the project's repository. MIT
+licensed, in both directions.
